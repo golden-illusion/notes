@@ -1,0 +1,50 @@
+<head>
+  <title>notes</title>
+</head>
+
+<body>
+  <h1>Welcome to Meteor!</h1>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 pull-right">
+        {{> loginButtons}}
+      </div>
+
+      {{#if currentUser}}
+        {{> noteForm}}
+        {{> noteList}}
+      {{/if}}
+    </div>
+  </div>
+</body>
+
+<template name="noteForm">
+  <h4>take a note</h4>
+  <div class="row">
+    <div class="col-md-4 create-note-wrapper">
+      <textarea class="form-control" rows="3" id="note-form"></textarea>
+      <button id="create-note">create note</button>
+    </div>
+  </div>
+</template>
+
+<template name="noteList">
+  <h5>Note List</h5>
+  <ul>
+    {{#each notes}}
+      {{> noteItem}}
+    {{/each}}
+  </ul>
+</template>
+
+<template name="noteItem">
+  <li>
+    {{#if editing}}
+      <input name="content" type="text" value="{{content}}" class="input-content">
+    {{else}}
+      <label class="success note-content">{{content}}</label>
+      &nbsp;<button class="btn remove">Delete</button>
+      &nbsp;<button class="btn edit">Edit</button>
+    {{/if}}
+  </li>
+</template>
