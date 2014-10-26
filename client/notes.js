@@ -3,28 +3,7 @@ Notes = new Mongo.Collection("notes");
 Meteor.subscribe("notes");
 
 Session.setDefault("editing_note", null)
-
-//helpers
-var okCancelEvents = function (selector, callbacks) {
-  var ok = callbacks.ok || function () {};
-  var cancel = callbacks.cancel || function () {};
-
-  var events = {};
-  events['keyup '+ selector + ', keydown ' + selector + ', focusout ' +selector] =
-    function (evt) {
-      if (evt.type === "keydown" && evt.which === 27) {
-        cancel.call(this, evt);
-      }
-      else if (evt.type === "keyup" && evt.which === 13 || evt.type === "focusout") {
-        var value = String(evt.target.value || "");
-        if (value)
-          ok.call(this, value, evt);
-        else
-          cancel.call(this, evt);
-      }
-    };
-  return events;
-};
+Session.setDefault("inserting_note", null)
 
 //temlates
 Template.noteList.helpers({
@@ -34,8 +13,11 @@ Template.noteList.helpers({
 });
 
 Template.noteForm.events({
-  "click #create-note": function(e){
-    Meteor.call("create", $(Template.instance).find("#note-form").val())
+  "click #create-note": function(e, template){
+    Session.set("inserting_note", this._id)
+    Tracker.flush()
+    template.find("#input-content").focus()
+    template.find("#input-content").select()
   }
 });
 
@@ -43,17 +25,36 @@ Template.noteItem.events({
   "click .remove": function(){
     Meteor.call("remove", this._id)
   },
-  "dblclick .note-content": function(){
+  "dblclick .note-content": function(event, template){
     Session.set("editing_note", this._id)
+    Tracker.flush()
+    template.find("#input-content").focus()
+    template.find("#input-content").select()
   }
 })
 
 Template.noteItem.events(okCancelEvents(
-  ".input-content",
+  "#input-content",
   {
     ok: function(content, event){
       Session.set("editing_note", null)
       Meteor.call("update", this._id, content)
+    },
+    cancel: function(){
+      Session.set("editing_note", null)
+    }
+  }
+));
+
+Template.noteForm.events(okCancelEvents(
+  "#input-content",
+  {
+    ok: function(content, event){
+      Session.set("inserting_note", null)
+      Meteor.call("create", content)
+    },
+    cancel: function(){
+      Session.set("editing_note", null)
     }
   }
 ));
@@ -62,3 +63,10 @@ Template.noteItem.editing = function(){
   return Session.equals("editing_note", this._id)
 }
 
+Template.noteForm.inserting = function(){
+  return Session.equals("inserting_note", this._id)
+}
+
+Template.noteItem.content = function(){
+  return Autolinker.link(this.content)
+}

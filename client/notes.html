@@ -22,8 +22,11 @@
   <h4>take a note</h4>
   <div class="row">
     <div class="col-md-4 create-note-wrapper">
-      <textarea class="form-control" rows="3" id="note-form"></textarea>
-      <button id="create-note">create note</button>
+      {{#if inserting}}
+        <textarea class="form-control" rows="3" id="input-content"></textarea>
+      {{else}}
+        <button id="create-note">insert</button>
+      {{/if}}
     </div>
   </div>
 </template>
@@ -40,11 +43,11 @@
 <template name="noteItem">
   <li>
     {{#if editing}}
-      <input name="content" type="text" value="{{content}}" class="input-content">
+      <input name="content" type="text" value="{{content}}" id="input-content">
     {{else}}
-      <label class="success note-content">{{content}}</label>
-      &nbsp;<button class="btn remove">Delete</button>
-      &nbsp;<button class="btn edit">Edit</button>
+      <p>
+        {{{content}}}&nbsp;<button class="btn remove">x</button>
+      </p>
     {{/if}}
   </li>
 </template>
