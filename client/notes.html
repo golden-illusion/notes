@@ -3,7 +3,7 @@
 </head>
 
 <body>
-  <h1>Welcome to Meteor!</h1>
+  <h1>Welcome to Note!</h1>
   <div class="container-fluid">
     <div class="row">
       <div class="col-md-4 pull-right">
@@ -45,7 +45,7 @@
     {{#if editing}}
       <input name="content" type="text" value="{{content}}" id="input-content">
     {{else}}
-      <p>
+      <p class="note-content">
         {{{content}}}&nbsp;<button class="btn remove">x</button>
       </p>
     {{/if}}
