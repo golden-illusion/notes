@@ -3,51 +3,98 @@
 </head>
 
 <body>
-  <h1>Welcome to Note!</h1>
-  <div class="container-fluid">
+  <div class="container">
     <div class="row">
-      <div class="col-md-4 pull-right">
+      <h1>Welcome to Note!</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-2 pull-right">
         {{> loginButtons}}
       </div>
 
       {{#if currentUser}}
         {{> noteForm}}
-        {{> noteList}}
       {{/if}}
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-xs-3 category">
+        {{#if currentUser}}
+          {{> categoryForm}}
+        {{/if}}
+      </div>
+      <div class="col-xs-9 note-list">
+        {{#if currentUser}}
+          {{> noteList}}
+        {{/if}}
+      </div>
     </div>
   </div>
 </body>
 
+<template name="categoryForm">
+  <div class="list-group">
+    {{#if categories}}
+      {{#each categories}}
+        <a href="#" class="list-group-item {{selected}}">
+          {{title}}
+          <span class="pull-right">
+            <button class="btn btn-xs btn-warning">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
+          </span>
+        </a>
+      {{/each}}
+    {{/if}}
+  </div>
+  <label for="create-category">Create a category</label>
+  <input type="text" id="create-category" class="form-control">
+</template>
+
 <template name="noteForm">
-  <h4>take a note</h4>
-  <div class="row">
-    <div class="col-md-4 create-note-wrapper">
+    <div class="col-xs-10 create-note-wrapper">
       {{#if inserting}}
         <textarea class="form-control" rows="3" id="input-content"></textarea>
       {{else}}
-        <button id="create-note">insert</button>
+        <button class="btn btn-primary" id="create-note">
+          Take a note
+        </button>
       {{/if}}
     </div>
-  </div>
 </template>
 
 <template name="noteList">
-  <h5>Note List</h5>
-  <ul>
-    {{#each notes}}
-      {{> noteItem}}
-    {{/each}}
-  </ul>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th>Note List</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each notes}}
+        {{> noteItem}}
+      {{/each}}
+    </tbody>
+  </table>
 </template>
 
 <template name="noteItem">
-  <li>
-    {{#if editing}}
-      <input name="content" type="text" value="{{content}}" id="input-content">
-    {{else}}
-      <p class="note-content">
-        {{{content}}}&nbsp;<button class="btn remove">x</button>
-      </p>
-    {{/if}}
-  </li>
+  <tr>
+    <td>
+      {{#if editing}}
+        <input name="content" type="text" value="{{content}}" id="input-content">
+      {{else}}
+        <p class="note-content">
+          {{{content}}}
+        </p>
+      {{/if}}
+    </td>
+    <td>
+      <button class="btn btn-danger remove">Remove</button>
+    </td>
+  </tr>
 </template>
