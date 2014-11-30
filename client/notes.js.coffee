@@ -1,23 +1,24 @@
 Notes = new Mongo.Collection "notes"
 Categories = new Mongo.Collection "categories"
 
-Meteor.subscribe "categories", ->
-  if !Session.get "category_id"
-    Session.set "category_id", Categories.findOne {}, {sort: {name: 1}}
+Tracker.autorun ->
+  Meteor.subscribe "categories", Meteor.userId(), ->
+    if !Session.get "category_id"
+      Session.set "category_id", Categories.findOne {userId: Meteor.userId()}, {sort: {name: 1}}
 
 Tracker.autorun ->
-  Meteor.subscribe "notes", Session.get("category_id")
+  Meteor.subscribe "notes", Session.get("category_id"), Meteor.userId()
 
 Session.setDefault("editing_note", null)
 Session.setDefault("inserting_note", null)
 
 Template.noteList.helpers
   notes: ->
-    Notes.find {category_id: Session.get("category_id")}
+    Notes.find {category_id: Session.get("category_id"), userId: Meteor.userId()}
 
 Template.categoryForm.helpers
   categories: ->
-    Categories.find {}
+    Categories.find {userId: Meteor.userId()}
 
 Template.categoryForm.events(window.okCancelEvents(
   "#create-category"

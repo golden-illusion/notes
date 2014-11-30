@@ -1,11 +1,11 @@
 Notes = new Mongo.Collection "notes"
 Categories = new Mongo.Collection "categories"
 
-Meteor.publish "categories", ->
-  Categories.find({})
+Meteor.publish "categories", (userId) ->
+  Categories.find({userId: userId})
 
-Meteor.publish "notes", (category_id)->
-  Notes.find({category_id: category_id})
+Meteor.publish "notes", (category_id, userId)->
+  Notes.find({category_id: category_id, userId: userId})
 
 Meteor.methods
   createNote: (content, category_id) ->
@@ -25,7 +25,7 @@ Meteor.methods
       throw new Meteor.Error(userId)
   createCategory: (title) ->
     if this.userId isnt null
-      Categories.insert {title: title}
+      Categories.insert {title: title, userId: this.userId}
     else
       throw new Meteor.Error userId
   removeCategory: (category_id) ->
