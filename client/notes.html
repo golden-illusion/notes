@@ -34,25 +34,40 @@
     </div>
   </div>
   {{> categoryModal}}
+  {{> confirmation}}
 </body>
 
 <template name="categoryForm">
   <div class="list-group">
     {{#if categories}}
       {{#each categories}}
-        <a href="#" class="list-group-item {{selected}}">
-          {{title}}
-          <span class="pull-right">
-            <button class="btn btn-xs btn-warning">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </span>
-        </a>
+        {{> categoryItem}}
       {{/each}}
     {{/if}}
   </div>
   <label for="create-category">Create a category</label>
   <input type="text" id="create-category" class="form-control">
+</template>
+
+<template name="categoryItem">
+  <a href="#" class="list-group-item {{selected}}">
+    {{#if editing}}
+      <input value="{{title}}" type="text" class="category-input">
+      <button class="btn btn-xs btn-warning submit-category">
+        <span class="glyphicon glyphicon-ok"></span>
+      </button>
+    {{else}}
+      {{title}}
+      <span class="pull-right">
+        <button class="btn btn-xs btn-warning edit-category">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+        <button class="btn btn-xs btn-danger remove-category">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+      </span>
+    {{/if}}
+  </a>
 </template>
 
 <template name="noteForm">
@@ -83,9 +98,13 @@
       <tr>
         <td colspan="2">
           <div class="pull-right">
-            <input value="move to category" class="btn btn move-notes"
-              type="button" data-toggle="modal" data-target="#category-modal"/>
-            <input value="remove selected" class="btn-danger btn remove-selected" type="button" />
+            <button class="btn btn-xs btn-warning move-notes"
+              data-toggle="modal" data-target="#category-modal">
+              <span class="glyphicon glyphicon-move"></span>
+            </button>
+            <button class="btn btn-xs btn-danger remove-selected">
+              <span class="glyphicon glyphicon-trash"></span>
+            </button>
           </div>
         </td>
       </tr>
@@ -139,7 +158,36 @@
       </div>
     </td>
     <td>
-      <button class="btn btn-danger remove">Remove</button>
+      <button class="btn btn-xs btn-danger remove">
+        <span class="glyphicon glyphicon-trash"></span>
+      </button>
     </td>
   </tr>
+</template>
+
+<template name="confirmation">
+  <div class="modal fade" id="confirmation">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          confirmation
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-10">
+              <div class="pull-right">
+                r u sure?
+                <button class="btn btn btn-danger ok">
+                  kill them all!
+                </button>
+                <button class="btn btn btn-wanring cancel" data-dismiss="modal">
+                  Nah!
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

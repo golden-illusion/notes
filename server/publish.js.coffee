@@ -34,3 +34,8 @@ Meteor.methods
       Categories.remove {_id: category_id}
     else
       throw new Meteor.Error this.userId
+  updateCategory: (selector, query, options) ->
+    if this.userId isnt null
+      Categories.update(selector, query, options)
+    else
+      throw new Meteor.Error(userId)

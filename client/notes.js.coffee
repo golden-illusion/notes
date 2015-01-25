@@ -16,6 +16,7 @@ Tracker.autorun ->
 
 Session.setDefault("editing_note", null)
 Session.setDefault("inserting_note", null)
+Session.setDefault("editing_category", null)
 
 Template.noteList.helpers
   notes: ->
@@ -41,8 +42,9 @@ Template.categoryModal.events
 
 Template.noteList.events
   "click .remove-selected": (e) ->
-    Meteor.call("removeNote", {_id: {$in: Session.get("selected_notes")}})
-    Session.set("selected_notes", [])
+    confirmation {_id: {$in: Session.get("selected_notes")}}, (query)->
+      Meteor.call("removeNote", query)
+      Session.set("selected_notes", [])
 
 Template.categoryForm.helpers
   categories: ->
@@ -59,11 +61,23 @@ Template.categoryForm.events(window.okCancelEvents(
 Template.categoryForm.events
   "click .list-group-item": (evt)->
     Session.set "category_id", this._id
-  "click .btn-warning": ->
+  "click .remove-category": ->
     Session.set "category_id", Categories.findOne()._id
     Meteor.call "removeCategory", this._id
 
-Template.categoryForm.selected = ->
+Template.categoryItem.events
+  "click .edit-category": ->
+    Session.set("editing_category", this._id)
+  "click .submit-category": (e)->
+    title = $(e.target).parent().parent().find(".category-input").val()
+    Meteor.call("updateCategory", this._id, {$set: {title: title}})
+    Session.set("editing_category", null)
+
+Template.categoryItem.helpers
+  editing: ->
+    Session.equals "editing_category", this._id
+
+Template.categoryItem.selected = ->
   if Session.equals("category_id", this._id) then "active" else ""
 
 Template.noteForm.events
@@ -78,7 +92,8 @@ Template.noteForm.events
 
 Template.noteItem.events
   "click .remove": ->
-    Meteor.call "removeNote", {_id: this._id}
+    confirmation this._id, (id)->
+      Meteor.call "removeNote", {_id: id}
   "dblclick .note-content": (event, template) ->
     Session.set "editing_note", this._id
     Tracker.flush()
@@ -114,3 +129,9 @@ Template.noteForm.inserting = ->
 
 Template.noteItem.content = ->
   Autolinker.link this.content
+
+confirmation = (params, callback)->
+  $("#confirmation").modal("show")
+  $("#confirmation .ok").one "click", ->
+    callback(params)
+    $("#confirmation").modal("hide")
