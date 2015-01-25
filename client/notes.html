@@ -33,6 +33,7 @@
       </div>
     </div>
   </div>
+  {{> categoryModal}}
 </body>
 
 <template name="categoryForm">
@@ -79,20 +80,63 @@
       {{#each notes}}
         {{> noteItem}}
       {{/each}}
+      <tr>
+        <td colspan="2">
+          <div class="pull-right">
+            <input value="move to category" class="btn btn move-notes"
+              type="button" data-toggle="modal" data-target="#category-modal"/>
+            <input value="remove selected" class="btn-danger btn remove-selected" type="button" />
+          </div>
+        </td>
+      </tr>
     </tbody>
   </table>
+</template>
+
+<template name="categoryModal">
+  <div class="modal fade" id="category-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <select class="form-control" id="category-list">
+                {{#each categories}}
+                  <option value="{{_id}}">
+                    {{title}}
+                  </option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="col-lg-3">
+              <button class="btn btn-primary btn-move">move</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <template name="noteItem">
   <tr>
     <td>
-      {{#if editing}}
-        <input name="content" type="text" value="{{content}}" id="input-content">
-      {{else}}
-        <p class="note-content">
-          {{{content}}}
-        </p>
-      {{/if}}
+      <div class="col-lg-6">
+        <div class="input-group">
+          <span class="input-group-addon">
+            <input type="checkbox" class="note-item checkbox" />
+          </span>
+          <div>
+            {{#if editing}}
+              <textarea name="content" type="text" value="{{content}}" id="input-content" class="form-control"></textarea>
+            {{else}}
+              <p class="note-content form-control">
+                {{{header}}}
+              </p>
+            {{/if}}
+          </div>
+        </div>
+      </div>
     </td>
     <td>
       <button class="btn btn-danger remove">Remove</button>

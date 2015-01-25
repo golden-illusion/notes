@@ -19,7 +19,30 @@ Session.setDefault("inserting_note", null)
 
 Template.noteList.helpers
   notes: ->
-    Notes.find {category_id: Session.get("category_id"), userId: Meteor.userId()}
+    notes = Notes.find({category_id: Session.get("category_id"), userId: Meteor.userId()}).fetch()
+    _.each(notes, (note)->
+      note.header = ->
+        this.content.substring(0,30)
+    )
+    notes
+
+Template.categoryModal.helpers
+  categories: ->
+    Categories.find {userId: Meteor.userId()}
+
+Template.categoryModal.events
+  "click .btn-move": (e)->
+    category_id = $("#category-list").val()
+    selected_notes = Session.get("selected_notes")
+    selected_notes ||= []
+    Meteor.call("updateNote", {_id: {$in: selected_notes}}, {$set: {category_id: category_id}}, {multi: true})
+    Session.set("selected_notes", [])
+    $("#category-modal").modal("hide")
+
+Template.noteList.events
+  "click .remove-selected": (e) ->
+    Meteor.call("removeNote", {_id: {$in: Session.get("selected_notes")}})
+    Session.set("selected_notes", [])
 
 Template.categoryForm.helpers
   categories: ->
@@ -55,18 +78,30 @@ Template.noteForm.events
 
 Template.noteItem.events
   "click .remove": ->
-    Meteor.call "removeNote", this._id
+    Meteor.call "removeNote", {_id: this._id}
   "dblclick .note-content": (event, template) ->
     Session.set "editing_note", this._id
     Tracker.flush()
     template.find("#input-content").focus()
     template.find("#input-content").select()
+  "change .note-item": (e)->
+    if e.target.checked
+      selected_notes = Session.get("selected_notes")
+      selected_notes ||= []
+      selected_notes.push(this._id)
+    else
+      selected_notes = Session.get("selected_notes")
+      selected_notes ||= []
+      index = selected_notes.indexOf(this._id)
+      selected_notes.splice(index, 1)
+    Session.set("selected_notes", selected_notes)
+
 
 Template.noteItem.events(window.okCancelEvents(
   "#input-content"
     ok: (content, event) ->
       Session.set "editing_note", null
-      Meteor.call "updateNote", this._id, content
+      Meteor.call "updateNote", this._id, {$set: {content: content}}
     cancel: ->
       Session.set "editing_note", null
 ))

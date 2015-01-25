@@ -13,14 +13,14 @@ Meteor.methods
       Notes.insert({userId: this.userId, content: content, category_id: category_id})
     else
       throw new Meteor.Error(userId)
-  removeNote: (id) ->
+  removeNote: (query) ->
     if this.userId isnt null
-      Notes.remove({_id: id})
+      Notes.remove(query)
     else
       throw new Meteor.Error(userId)
-  updateNote: (id, content) ->
+  updateNote: (selector, query, options) ->
     if this.userId isnt null
-      Notes.update(id, {$set: {content: content}})
+      Notes.update(selector, query, options)
     else
       throw new Meteor.Error(userId)
   createCategory: (title) ->
