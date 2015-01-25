@@ -28,8 +28,16 @@ Template.noteForm.events
     template.find("#input-content").focus()
     template.find("#input-content").select()
   "click #save-note": (e, template) ->
-    Meteor.call("createNote", template.find("#input-content").value, Session.get("category_id"))
+    content = template.find("#input-content").value
+    if content != ""
+      Meteor.call("createNote", content, Session.get("category_id"))
     Session.set("inserting_note", null)
+
+Template.noteForm.events window.okCancelEvents(
+  "#input-content"
+    cancel: ->
+      Session.set "inserting_note", null
+)
 
 Template.noteItem.events
   "click .remove": ->
@@ -56,11 +64,11 @@ Template.noteItem.events
     Meteor.call "updateNote", this._id, {$set: {content: content}}
     Session.set "editing_note", null
 
-Template.noteItem.events(window.okCancelEvents(
+Template.noteItem.events window.okCancelEvents(
   "#input-content"
     cancel: ->
       Session.set "editing_note", null
-))
+)
 
 Template.noteItem.helpers
   editing: ->
