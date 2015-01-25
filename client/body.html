@@ -1,0 +1,34 @@
+<body>
+  <div class="container">
+    <div class="row">
+      <h1>Welcome to Note!</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-xs-2 pull-right">
+        {{> loginButtons}}
+      </div>
+
+      {{#if currentUser}}
+        {{> noteForm}}
+      {{/if}}
+    </div>
+
+    <br>
+
+    <div class="row">
+      <div class="col-xs-3 category">
+        {{#if currentUser}}
+          {{> categoryForm}}
+        {{/if}}
+      </div>
+      <div class="col-xs-9 note-list">
+        {{#if currentUser}}
+          {{> noteList}}
+        {{/if}}
+      </div>
+    </div>
+  </div>
+  {{> categoryModal}}
+  {{> confirmation}}
+</body>

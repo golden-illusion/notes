@@ -10,3 +10,9 @@ window.okCancelEvents = (selector, callbacks) ->
       value = String(evt.target.value || "")
       if value then ok.call(@, value, evt) else cancel.call(@, evt) end
   events
+
+window.confirmation = (params, callback)->
+  $("#confirmation").modal("show")
+  $("#confirmation .ok").one "click", ->
+    callback(params)
+    $("#confirmation").modal("hide")

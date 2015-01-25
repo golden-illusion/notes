@@ -1,0 +1,57 @@
+<template name="categoryForm">
+  <div class="list-group">
+    {{#if categories}}
+      {{#each categories}}
+        {{> categoryItem}}
+      {{/each}}
+    {{/if}}
+  </div>
+  <label for="create-category">Create a category</label>
+  <input type="text" id="create-category" class="form-control">
+</template>
+
+<template name="categoryItem">
+  <a href="#" class="list-group-item {{selected}}">
+    {{#if editing}}
+      <input value="{{title}}" type="text" class="category-input">
+      <button class="btn btn-xs btn-warning submit-category">
+        <span class="glyphicon glyphicon-ok"></span>
+      </button>
+    {{else}}
+      {{title}}
+      <span class="pull-right">
+        <button class="btn btn-xs btn-warning edit-category">
+          <span class="glyphicon glyphicon-pencil"></span>
+        </button>
+        <button class="btn btn-xs btn-danger remove-category">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+      </span>
+    {{/if}}
+  </a>
+</template>
+
+<template name="categoryModal">
+  <div class="modal fade" id="category-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-6">
+              <select class="form-control" id="category-list">
+                {{#each categories}}
+                  <option value="{{_id}}">
+                    {{title}}
+                  </option>
+                {{/each}}
+              </select>
+            </div>
+            <div class="col-lg-3">
+              <button class="btn btn-primary btn-move">move</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
