@@ -25,16 +25,15 @@
         {{> noteItem}}
       {{/each}}
       <tr>
-        <td colspan="2">
-          <div class="pull-right">
-            <button class="btn btn-xs btn-warning move-notes"
-              data-toggle="modal" data-target="#category-modal">
-              <span class="glyphicon glyphicon-move"></span>
-            </button>
-            <button class="btn btn-xs btn-danger remove-selected">
-              <span class="glyphicon glyphicon-trash"></span>
-            </button>
-          </div>
+        <td></td>
+        <td width="15%">
+          <button class="btn btn-xs btn-warning move-notes"
+            data-toggle="modal" data-target="#category-modal">
+            <span class="glyphicon glyphicon-move"></span>
+          </button>
+          <button class="btn btn-xs btn-danger remove-selected">
+            <span class="glyphicon glyphicon-trash"></span>
+          </button>
         </td>
       </tr>
     </tbody>
@@ -62,7 +61,8 @@
         </div>
       </div>
     </td>
-    <td>
+    <td width="15%">
+
       {{#if editing}}
         <button class="btn btn-xs btn-warning submit-note">
           <span class="glyphicon glyphicon-ok"></span>
@@ -72,10 +72,27 @@
           <span class="glyphicon glyphicon-pencil"></span>
         </button>
       {{/if}}
-
+      <button class="btn btn-xs btn-warning read-note">
+        <span class="glyphicon glyphicon-open"></span>
+      </button>
       <button class="btn btn-xs btn-danger remove">
         <span class="glyphicon glyphicon-trash"></span>
       </button>
     </td>
   </tr>
+</template>
+
+<template name="noteDetail">
+  <div class="modal fade" id="note-detail-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-12 body">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>

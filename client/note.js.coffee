@@ -63,6 +63,8 @@ Template.noteItem.events
     content = $(e.target).parent().parent().prev().find("#input-content").val()
     Meteor.call "updateNote", this._id, {$set: {content: content}}
     Session.set "editing_note", null
+  "click .read-note": (e)->
+    openNote(this.content)
 
 Template.noteItem.events window.okCancelEvents(
   "#input-content"

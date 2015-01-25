@@ -16,3 +16,7 @@ window.confirmation = (params, callback)->
   $("#confirmation .ok").one "click", ->
     callback(params)
     $("#confirmation").modal("hide")
+
+window.openNote = (content)->
+  $("#note-detail-modal").find("div.body").html(Autolinker.link(content))
+  $("#note-detail-modal").modal("show")
